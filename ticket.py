@@ -7,7 +7,6 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.common.by import By
 
 
-
 import time
 import os
 
@@ -16,11 +15,23 @@ options = Options()
 # options.add_argument('--no-sandbox')
 options.add_argument('--disable-dev-shm-usage')
 driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()), options=options)
-
-my_cp_button = WebDriverWait(driver, 10).until(
-    EC.presence_of_element_located((By.XPATH, "//button[.//img[@alt='profile']]"))
-)
-
 driver.get("https://www.cp.pt/pt/")
-print("Opened: " + driver.title)
+
+try:
+    my_cp_button = WebDriverWait(driver, 10).until(
+        EC.element_to_be_clickable((By.XPATH, "//button[@class='btn btn-primary'][.//img[@alt='profile']]"))
+    )
+    
+    print("Button found!")
+    print("Button text:", my_cp_button.text)
+    print("Button class:", my_cp_button.get_attribute('class'))
+    print("Button HTML:", my_cp_button.get_attribute('outerHTML'))
+    
+    # Click it
+    my_cp_button.click()
+    
+except Exception as e:
+    print(f"Error: {e}")
+
+
 driver.close()
