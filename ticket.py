@@ -18,20 +18,22 @@ driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()), opti
 driver.get("https://www.cp.pt/pt/")
 
 try:
-    my_cp_button = WebDriverWait(driver, 10).until(
-        EC.element_to_be_clickable((By.XPATH, "//button[@class='btn btn-primary'][.//img[@alt='profile']]"))
+
+    cookie_button = WebDriverWait(driver, 10).until(
+        EC.element_to_be_clickable((By.ID, "onetrust-accept-btn-handler"))
     )
-    
-    print("Button found!")
-    print("Button text:", my_cp_button.text)
-    print("Button class:", my_cp_button.get_attribute('class'))
-    print("Button HTML:", my_cp_button.get_attribute('outerHTML'))
-    
-    # Click it
+    cookie_button.click()
+    my_cp_button = WebDriverWait(driver, 10).until(
+            EC.element_to_be_clickable((By.XPATH, "//button[@class='btn btn-primary'][.//img[@alt='profile']]"))
+    )
     my_cp_button.click()
+    time.sleep(10)
+
     
 except Exception as e:
     print(f"Error: {e}")
 
 
 driver.close()
+
+# This file was commented by Github Copilot!
