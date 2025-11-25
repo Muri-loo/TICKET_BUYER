@@ -1,3 +1,4 @@
+from dotenv import load_dotenv
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.chrome.service import Service
@@ -19,6 +20,9 @@ driver.get("https://www.cp.pt/pt/")
 
 try:
 
+    load_dotenv()
+    CP_PASSWORD = os.getenv('CP_USERNAME')
+    CP_USERNAME = os.getenv('CP_PASSWORD')
     cookie_button = WebDriverWait(driver, 10).until(
         EC.element_to_be_clickable((By.ID, "onetrust-accept-btn-handler"))
     )
@@ -27,7 +31,22 @@ try:
             EC.element_to_be_clickable((By.XPATH, "//button[@class='btn btn-primary'][.//img[@alt='profile']]"))
     )
     my_cp_button.click()
+
+    my_cp_username = WebDriverWait(driver, 10).until(
+        EC.presence_of_element_located((By.ID, "username"))
+    )
+    my_cp_password = WebDriverWait(driver, 10).until(
+        EC.presence_of_element_located((By.ID, "password"))
+    )
+    my_cp_username.clear()
+    my_cp_username.send_keys(CP_USERNAME)
+    my_cp_password.clear()
+    my_cp_password.send_keys(CP_PASSWORD)
+    
     time.sleep(10)
+
+        
+
 
     
 except Exception as e:
