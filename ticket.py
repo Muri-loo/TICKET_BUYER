@@ -6,10 +6,17 @@ from webdriver_manager.chrome import ChromeDriverManager
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.common.by import By
-
+import random
 
 import time
 import os
+
+
+
+def human_type(element, text):
+    for char in text:
+        time.sleep(random.randint(1,2)) 
+        element.send_keys(char)
 
 options = Options()
 # options.add_argument('--headless')
@@ -38,10 +45,17 @@ try:
     my_cp_password = WebDriverWait(driver, 10).until(
         EC.presence_of_element_located((By.ID, "password"))
     )
-    my_cp_username.clear()
-    my_cp_username.send_keys(CP_USERNAME)
-    my_cp_password.clear()
-    my_cp_password.send_keys(CP_PASSWORD)
+
+    human_type(my_cp_username,CP_USERNAME)
+    human_type(my_cp_password,CP_PASSWORD)
+
+ 
+
+
+    cp_login_button = WebDriverWait(driver, 10).until(
+            EC.element_to_be_clickable((By.ID, "kc-login"))
+    )
+    cp_login_button.click()
 
     time.sleep(10)
 
@@ -54,5 +68,3 @@ except Exception as e:
 
 
 driver.close()
-
-# This file was commented by Github Copilot!
