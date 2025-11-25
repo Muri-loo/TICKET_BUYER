@@ -21,8 +21,8 @@ driver.get("https://www.cp.pt/pt/")
 try:
 
     load_dotenv()
-    CP_PASSWORD = os.getenv('CP_USERNAME')
-    CP_USERNAME = os.getenv('CP_PASSWORD')
+    CP_PASSWORD = os.getenv('CP_PASSWORD')
+    CP_USERNAME = os.getenv('CP_USERNAME')
     cookie_button = WebDriverWait(driver, 10).until(
         EC.element_to_be_clickable((By.ID, "onetrust-accept-btn-handler"))
     )
@@ -42,7 +42,7 @@ try:
     my_cp_username.send_keys(CP_USERNAME)
     my_cp_password.clear()
     my_cp_password.send_keys(CP_PASSWORD)
-    
+
     time.sleep(10)
 
         
