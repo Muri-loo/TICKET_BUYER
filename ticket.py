@@ -61,8 +61,17 @@ try:
 
     cp_login_button.click()
     tomorrow = (datetime.today() + timedelta(days=1)).strftime('%Y-%m-%d')
-    print(tomorrow,SANTA_APOLONIA_STATION,POMBAL_STATION)
-    driver.get("http://cp.pt/pt/resultado-pesquisa?passageiros=1&selectedClass=2&startDate=2025-11-28&departureStation=94-30007&arrivalStation=94-34645")
+
+    url = (
+        f"http://cp.pt/pt/resultado-pesquisa?"
+        f"passageiros=1&selectedClass=2"
+        f"&startDate={tomorrow}"
+        f"&departureStation={SANTA_APOLONIA_STATION}"
+        f"&arrivalStation={POMBAL_STATION}"
+    )
+
+    print(url)
+    driver.get(url)
 
 
     time.sleep(10)
