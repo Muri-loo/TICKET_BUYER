@@ -16,7 +16,7 @@ import os
 
 def human_type(element, text):
     for char in text:
-        time.sleep(random.uniform(0.45, 0.90))  # Sleep for a random float between 0.5 and 1 second
+        time.sleep(random.uniform(0.35, 0.70))  # Sleep for a random float between 0.5 and 1 second
         element.send_keys(char)
 
 options = Options()
@@ -70,8 +70,16 @@ try:
         f"&arrivalStation={POMBAL_STATION}"
     )
 
+
+
     print(url)
     driver.get(url)
+    
+    ##ONLY WORKS IF BUTTON TEXT IS COMPLETE OPTIMIZE LATER FOR VARIABLE HOURS
+    button = WebDriverWait(driver, 10).until(EC.element_to_be_clickable(
+        (By.XPATH, '//button[@aria-label="Selecionar ida das 15:30 às 17:05"]')
+    ))
+    button.click()
 
 
     time.sleep(10)
