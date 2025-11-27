@@ -6,6 +6,7 @@ from webdriver_manager.chrome import ChromeDriverManager
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.common.by import By
+from datetime import datetime, timedelta
 import random
 
 import time
@@ -15,7 +16,7 @@ import os
 
 def human_type(element, text):
     for char in text:
-        time.sleep(random.randint(1,2)) 
+        time.sleep(random.uniform(0.45, 0.90))  # Sleep for a random float between 0.5 and 1 second
         element.send_keys(char)
 
 options = Options()
@@ -30,6 +31,10 @@ try:
     load_dotenv()
     CP_PASSWORD = os.getenv('CP_PASSWORD')
     CP_USERNAME = os.getenv('CP_USERNAME')
+    SANTA_APOLONIA_STATION = os.getenv('SANTA_APOLONIA_STATION')
+    POMBAL_STATION = os.getenv('POMBAL_STATION')
+
+
     cookie_button = WebDriverWait(driver, 10).until(
         EC.element_to_be_clickable((By.ID, "onetrust-accept-btn-handler"))
     )
@@ -49,20 +54,19 @@ try:
     human_type(my_cp_username,CP_USERNAME)
     human_type(my_cp_password,CP_PASSWORD)
 
- 
-
 
     cp_login_button = WebDriverWait(driver, 10).until(
             EC.element_to_be_clickable((By.ID, "kc-login"))
     )
+
     cp_login_button.click()
+    tomorrow = (datetime.today() + timedelta(days=1)).strftime('%Y-%m-%d')
+    print(tomorrow,SANTA_APOLONIA_STATION,POMBAL_STATION)
+    driver.get("http://cp.pt/pt/resultado-pesquisa?passageiros=1&selectedClass=2&startDate=2025-11-28&departureStation=94-30007&arrivalStation=94-34645")
+
 
     time.sleep(10)
 
-        
-
-
-    
 except Exception as e:
     print(f"Error: {e}")
 

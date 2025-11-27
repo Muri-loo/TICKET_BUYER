@@ -1,4 +1,4 @@
-#!/home/murilo-oliveira/PersonalProject/env/bin/python3
+#!/home/murilo-oliveira/Desktop/TICKET_BUYER/env/bin/python3
 # -*- coding: utf-8 -*-
 import re
 import sys
