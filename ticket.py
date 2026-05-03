@@ -41,8 +41,8 @@ def mount_url(departure_station, arrival_station):
 
 def build_driver():
     options = Options()
-    #options.add_argument('--headless')
-    #options.add_argument('--no-sandbox')
+    options.add_argument('--headless')
+    options.add_argument('--no-sandbox')
     options.add_argument('--disable-dev-shm-usage')
     options.add_argument('--disable-blink-features=AutomationControlled')
     options.add_argument('--window-size=1920,1080')
@@ -79,10 +79,19 @@ def wait_for_opening(departure_time, wait_for_opening):
         day=datetime.today().day
     )
     print(f"Waiting for ticket opening at {departure_time}...")
-    while datetime.now() < open_time:
-        remaining = int((open_time - datetime.now()).total_seconds())
-        print(f"  {remaining}s remaining...", end="\r")
-        time.sleep(0.5)
+    while True:
+        remaining = (open_time - datetime.now()).total_seconds()
+        if remaining <= 0:
+            break
+        elif remaining > 60:
+            print(f"  {int(remaining)}s remaining...", end="\r")
+            time.sleep(10)
+        elif remaining > 5:
+            print(f"  {remaining:.1f}s remaining...", end="\r")
+            time.sleep(1)
+        else:
+            print(f"  {remaining:.2f}s remaining...", end="\r")
+            time.sleep(0.05)
     print("Tickets open! Proceeding...")
 
 def apply_discount(driver, passe_verde):
@@ -98,7 +107,7 @@ def apply_discount(driver, passe_verde):
 # ── Main flow ─────────────────────────────────────────────────────────────────
 
 def main():
-    screenshot_dir = "/home/murilo-oliveira/CP/TICKET_BUYER/"
+    screenshot_dir = os.path.expanduser("~/CP/TICKET_BUYER/")
     if not os.path.exists(screenshot_dir):
         print(f"Directory does not exist: {screenshot_dir}")
         return
