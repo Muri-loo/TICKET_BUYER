@@ -10,7 +10,7 @@ import undetected_chromedriver as uc
 
 # VARS
 TIMEOUT_VALUE = 30
-TIME_FOR_RETRY_AGAIN = 60
+TIME_FOR_RETRY_AGAIN = 120
 
 
 # ?? Helpers ???????????????????????????????????????????????????????????????????
@@ -58,7 +58,7 @@ def build_driver():
     # options.add_argument("--user-data-dir=/home/murilo-oliveira/CP/chrome-profile")
     options.add_argument('--window-size=1920,1080')
     options.add_argument('--start-maximized')
-    driver = uc.Chrome(options=options, version_main=148)
+    driver = uc.Chrome(options=options)
     print("[driver] Driver ready.")
     return driver
 
@@ -114,7 +114,7 @@ def apply_discount(driver, passe_verde):
     combo_boxes[1].click()
     dropdown_options = wait_for_all(driver, By.CSS_SELECTOR, '[role="option"]')
     print(f"[discount] Found {len(dropdown_options)} dropdown option(s). Selecting option[2]...")
-    dropdown_options[2].click()
+    dropdown_options[1].click()
     print("[discount] Entering Passe Verde number...")
     WebDriverWait(driver, TIMEOUT_VALUE).until(
         EC.presence_of_element_located((By.NAME, "discountInputValue"))
@@ -156,8 +156,8 @@ def try_accept_cookies(driver):
         print("[cookies] No cookie banner found (or already accepted).")
 
 
-def buy_attempt_with_retry(driver, DEPARTURE_TIME, WAIT_FOR_OPENING):
-    failed_words = ["esgotado", "cheio", "indisponivel"]
+def buy_attempt_with_retry(driver, DEPARTURE_TIME, WAIT_FOR_OPENING, retry_delay=TIME_FOR_RETRY_AGAIN):
+    failed_words = ["esgotado", "cheio", "disponíveis", "reveja"]
     while True:
         buy_attempt(driver, DEPARTURE_TIME, WAIT_FOR_OPENING)
         time.sleep(5)
@@ -165,9 +165,9 @@ def buy_attempt_with_retry(driver, DEPARTURE_TIME, WAIT_FOR_OPENING):
         if not any(word in body_text for word in failed_words):
             print("[retry] Success — no failure words found. Proceeding.")
             break
-        print(f"[retry] Failed words detected in page, retrying...")
+        print(f"[retry] Failed words detected in page, retrying in {retry_delay}s...")
         driver.back()
-        time.sleep(TIME_FOR_RETRY_AGAIN)
+        time.sleep(retry_delay)
 
 
 # ?? Main flow ?????????????????????????????????????????????????????????????????
@@ -233,10 +233,12 @@ def main():
         login(driver, CP_USERNAME, CP_PASSWORD)
 
         print("[main] Navigating to search results page...")
+        time.sleep(5)
         driver.get(mount_url(DEPARTURE_STATION, ARRIVAL_STATION))
         print("[main] Search results page loaded.")
         if RETRY_IF_FAILS:
-            buy_attempt_with_retry(driver, DEPARTURE_TIME, WAIT_FOR_OPENING)
+            retry_delay = 5 if WAIT_FOR_OPENING else TIME_FOR_RETRY_AGAIN
+            buy_attempt_with_retry(driver, DEPARTURE_TIME, WAIT_FOR_OPENING, retry_delay=retry_delay)
         else:
             buy_attempt(driver, DEPARTURE_TIME, WAIT_FOR_OPENING)
 
